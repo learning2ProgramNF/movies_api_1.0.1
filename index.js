@@ -50,7 +50,7 @@ app.get('/', (req,res) => {
 app.get('/movies', (req,res) => {
     res.json(Movies);
 } ) 
-app.use('/documentation.html', express.static('documentation.html'));
+app.use('/documentation', express.static('public'));
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
