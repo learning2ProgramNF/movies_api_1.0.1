@@ -3,226 +3,220 @@ const express = require("express"),
   fs = require("fs"),
   path = require("path"),
   bodyParser = require("body-parser"),
-  uuid = require("uuid");
+  uuid = require("uuid"),
+  mongoose = require("mongoose"),
+  Models = require("./models.js");
 
 const app = express();
+
+const Movie = Models.Movie;
+const User = Models.User;
+
+mongoose.connect("mongodb://localhost:27017/cfDB", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use(morgan("common"));
 app.use(bodyParser.json());
 
-let users = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    favoriteMovies: ["Arrival"],
-  },
-  {
-    id: 2,
-    name: "Brian Smith",
-    favoriteMovies: [],
-  },
-  {
-    id: 3,
-    name: "Chloe Martinez",
-    favoriteMovies: [],
-  },
-];
-
-let movies = [
-  {
-    title: "Blade Runner",
-    director: {
-      name: "Ridley Scott",
-      bio: "Ridley Scott is an English film director and producer known for creating visually striking science fiction and historical epics.",
-      yearBorn: 1937,
-    },
-    genre: {
-      name: "Science Fiction",
-      description:
-        "A genre that explores futuristic concepts such as advanced science, technology, space exploration, and artificial intelligence.",
-    },
-    imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/53/Blade_Runner_poster.jpg"
-  },
-  {
-    title: "2001: A Space Odyssey",
-    director: {
-      name: "Stanley Kubrick",
-      bio: "Stanley Kubrick was an American film director known for his meticulous craftsmanship and for pushing the boundaries of cinematic storytelling.",
-      yearBorn: 1928,
-    },
-    genre: {
-      name: "Science Fiction",
-      description:
-        "A genre focusing on imaginative and futuristic concepts, often delving into space travel, alien life, and the nature of consciousness.",
-    },
-    imageUrl: "https://upload.wikimedia.org/wikipedia/en/e/e1/2001_A_Space_Odyssey_%281968%29.png"
-  },
-  {
-    title: "The Matrix",
-    director: {
-      name: "The Wachowskis",
-      bio: "Lana and Lilly Wachowski are American film and TV directors, writers, and producers best known for their work on The Matrix franchise.",
-      yearBorn: 1965,
-    },
-    genre: {
-      name: "Cyberpunk",
-      description:
-        "A subgenre of science fiction set in a dystopian future where high-tech and low-life intersect, often involving hackers and AI.",
-    },
-    imageUrl: "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg"
-  },
-  {
-    title: "Inception",
-    director: {
-      name: "Christopher Nolan",
-      bio: "Christopher Nolan is a British-American filmmaker known for blending intellectual storytelling with large-scale, high-concept cinema.",
-      yearBorn: 1970,
-    },
-    genre: {
-      name: "Science Fiction Thriller",
-      description:
-        "A genre that combines speculative scientific elements with fast-paced, suspenseful storytelling.",
-    },
-    imageUrl: "https://upload.wikimedia.org/wikipedia/en/7/7f/Inception_ver3.jpg"
-  },
-  {
-    title: "Arrival",
-    director: {
-      name: "Denis Villeneuve",
-      bio: "Denis Villeneuve is a Canadian filmmaker acclaimed for his atmospheric and thought-provoking science fiction and drama films.",
-      yearBorn: 1967,
-    },
-    genre: {
-      name: "Science Fiction Drama",
-      description:
-        "A genre that uses speculative science fiction elements to explore deep emotional or philosophical themes.",
-    },
-    imageUrl: "https://upload.wikimedia.org/wikipedia/en/d/df/Arrival_%282016_film%29.jpg"
-  },
-];
-
-
-//CREATE
-app.post("/users", (req, res) => {
-  const newUser = req.body;
-
-  if (newUser.name) {
-    newUser.id = uuid.v4();
-    users.push(newUser);
-    res.status(201).json(newUser);
-  } else {
-    res.status(400).send("User not created");
-  }
+app.get("/", (req, res) => {
+  res.send("Welcome to my Movie APi!");
 });
 
-//UPDATE
-app.put("/users/:id", (req, res) => {
-  const { id } = req.params;
-  const updatedUser = req.body;
-
-  let user = users.find((user) => user.id == id);
-
-  if (user) {
-    user.name = updatedUser.name;
-    res.status(200).json(user);
-  } else {
-    res.status(400).send("User not found");
-  }
+//Add a user
+/* We’ll expect JSON in this format
+{
+  ID: Integer,
+  Username: String,
+  Password: String,
+  Email: String,
+  Birthday: Date
+}*/
+app.post("/users", async (req, res) => {
+  await User.findOne({ Username: req.body.username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.username + " already exists");
+      } else {
+        User.create({
+          username: req.body.username,
+          name: req.body.name,
+          password: req.body.password,
+          email: req.body.email,
+          birthday: req.body.birthday,
+        })
+          .then((user) => {
+            res.status(201).json(user);
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send("Error: " + error);
+          });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send("Error: " + error);
+    });
 });
 
-//CREATE
-app.post("/users/:id/:movieTitle", (req, res) => {
-  const { id, movieTitle } = req.params;
-
-  let user = users.find((user) => user.id == id);
-
-  if (user) {
-    user.favoriteMovies.push(movieTitle);
-    res
-      .status(200)
-      .send(
-        `${movieTitle} has been added to user ${id}'s favorite Movies array `
-      );
-  } else {
-    res.status(400).send("User not updated");
-  }
+//Get all users
+app.get("/users", async (req, res) => {
+  await User.find()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-//DELETE
-app.delete("/users/:id/:movieTitle", (req, res) => {
-  const { id, movieTitle } = req.params;
-
-  let user = users.find((user) => user.id == id);
-
-  if (user) {
-    user.favoriteMovies = user.favoriteMovies.filter(
-      (title) => title !== movieTitle
-    );
-    res
-      .status(200)
-      .send(
-        `${movieTitle} has been removed from user ${id}'s favorite Movies array `
-      );
-  } else {
-    res.status(400).send("User not updated");
-  }
+// Get a user by username
+app.get("/users/:username", async (req, res) => {
+  await User.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-//DELETE
-app.delete("/users/:id", (req, res) => {
-  const { id } = req.params;
-
-  let user = users.find((user) => user.id == id);
-
-  if (user) {
-    users = users.filter((user) => user.id != id);
-    res.status(200).send(`User with ID ${id} has been deleted`);
-  } else {
-    res.status(400).send("User not found");
-  }
+// Update a user's info, by username
+/* We’ll expect JSON in this format
+{
+  Username: String,
+  (required)
+  Password: String,
+  (required)
+  Email: String,
+  (required)
+  Birthday: Date
+}*/
+app.put("/users/:username", async (req, res) => {
+  await User.findOneAndUpdate(
+    { username: req.params.username },
+    {
+      $set: {
+        username: req.body.username,
+        name: req.body.name,
+        password: req.body.password,
+        email: req.body.email,
+        birthday: req.body.birthday,
+      },
+    },
+    { new: true }
+  ) //This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-//READ
-app.get("/movies", (req, res) => {
-  res.status(200).json(movies);
+//CREATE Add movie to a user's list of favorites
+app.post("/users/:username/movies/:MovieID", async (req, res) => {
+  await User.findOneAndUpdate(
+    { username: req.params.username },
+    {
+      $push: { favoriteMovies: req.params.MovieID },
+    },
+    { new: true }
+  ) //This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-//READ
-app.get("/movies/:title", (req, res) => {
-  const { title } = req.params;
-  const movie = movies.find((movie) => movie.title === title);
-
-  if (movie) {
-    res.status(200).json(movie);
-  } else {
-    res.status(400).send("Movie not found");
-  }
+//DELETE Allow users to remove a movie from a user's list of favorites
+app.delete("/users/:username/movies/:MovieID", async (req, res) => {
+  await User.findOneAndUpdate(
+    { username: req.params.username },
+    {
+      $pull: { favoriteMovies: req.params.MovieID },
+    },
+    { new: true }
+  ) //This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-//Read
-app.get("/movies/genre/:genreName", (req, res) => {
-  const { genreName } = req.params;
-  const genre = movies.find((movie) => movie.genre.name === genreName).genre;
-
-  if (genre) {
-    res.status(200).json(genre);
-  } else {
-    res.status(400).send("Genre not found");
-  }
+//DELETE allow user to deregister
+app.delete("/users/:username", async (req, res) => {
+  await User.findOneAndDelete({ username: req.params.username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.username + " was not found");
+      } else {
+        res.status(400).send(req.params.username + " was deleted");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
-//Read
-app.get("/movies/director/:directorName", (req, res) => {
-  const { directorName } = req.params;
-  const director = movies.find(
-    (movie) => movie.director.name === directorName
-  ).director;
+//READ get all movies
+app.get("/movies", async (req, res) => {
+  await Movie.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
+});
 
-  if (director) {
-    res.status(200).json(director);
-  } else {
-    res.status(400).send("Director Not Found.");
-  }
+//READ a movie by title
+app.get("/movies/:title", async (req, res) => {
+  await Movie.findOne({ title: req.params.title })
+    .then((movie) => {
+      res.status(200).json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
+});
+
+//Read all Movies of a Genre
+app.get("/movies/genre/:genreName", async (req, res) => {
+  await Movie.find({ "genre.name": req.params.genreName })
+    .then((movies) => {
+      res.status(200).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
+});
+
+//Read all Movies of a Genre
+app.get("/movies/director/:directorName", async (req, res) => {
+  await Movie.find({ "director.name": req.params.directorName })
+    .then((movies) => {
+      res.status(200).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error: " + err);
+    });
 });
 
 app.listen(8080, () => {

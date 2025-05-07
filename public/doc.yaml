@@ -1,205 +1,286 @@
-openapi: 3.0.3
-info:
-  title: Movies API
-  version: 1.0.0
-  description: A REST API to manage movies, users, and favorite lists.
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *         - email
+ *       properties:
+ *         username:
+ *           type: string
+ *         name:
+ *           type: string
+ *         password:
+ *           type: string
+ *         email:
+ *           type: string
+ *         birthday:
+ *           type: string
+ *           format: date
+ *         favoriteMovies:
+ *           type: array
+ *           items:
+ *             type: string
+ *
+ *     Movie:
+ *       type: object
+ *       required:
+ *         - title
+ *         - description
+ *       properties:
+ *         title:
+ *           type: string
+ *         description:
+ *           type: string
+ *         genre:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *             description:
+ *               type: string
+ *         director:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *             bio:
+ *               type: string
+ *         actors:
+ *           type: array
+ *           items:
+ *             type: string
+ *         imagePath:
+ *           type: string
+ *         featured:
+ *           type: boolean
+ */
 
-servers:
-  - url: http://localhost:3000
-    description: Local development server
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: Create a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: User already exists
+ */
 
-paths:
-  /movies:
-    get:
-      summary: Get all movies
-      responses:
-        '200':
-          description: A list of movies
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
 
-  /movies/{id}:
-    get:
-      summary: Get a movie by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: A movie object
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Movie'
+/**
+ * @swagger
+ * /users/{username}:
+ *   get:
+ *     summary: Get a user by username
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ */
 
-  /movies/genre/{genreName}:
-    get:
-      summary: Get movies by genre name
-      parameters:
-        - name: genreName
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Movies in the given genre
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+/**
+ * @swagger
+ * /users/{username}:
+ *   put:
+ *     summary: Update user details
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: Updated user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ */
 
-  /movies/director/{directorName}:
-    get:
-      summary: Get movies by director name
-      parameters:
-        - name: directorName
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Movies directed by the given director
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Movie'
+/**
+ * @swagger
+ * /users/{username}/movies/{MovieID}:
+ *   post:
+ *     summary: Add a movie to a user's list of favorites
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: MovieID
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Updated user object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ */
 
-  /users:
-    post:
-      summary: Register a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-      responses:
-        '201':
-          description: User created
+/**
+ * @swagger
+ * /users/{username}/movies/{MovieID}:
+ *   delete:
+ *     summary: Remove a movie from a user's favorites
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: MovieID
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Updated user object
+ */
 
-  /users/{username}:
-    get:
-      summary: Get a user's profile
-      parameters:
-        - name: username
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: A user object
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+/**
+ * @swagger
+ * /users/{username}:
+ *   delete:
+ *     summary: Delete a user
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       400:
+ *         description: User not found or deleted
+ */
 
-  /users/{username}/movies/{movieId}:
-    put:
-      summary: Add a movie to user's favorites
-      parameters:
-        - name: username
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: movieId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Movie added to favorites
+/**
+ * @swagger
+ * /movies:
+ *   get:
+ *     summary: Get all movies
+ *     responses:
+ *       201:
+ *         description: A list of movies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Movie'
+ */
 
-    delete:
-      summary: Remove a movie from user's favorites
-      parameters:
-        - name: username
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: movieId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Movie removed from favorites
+/**
+ * @swagger
+ * /movies/{title}:
+ *   get:
+ *     summary: Get a movie by title
+ *     parameters:
+ *       - in: path
+ *         name: title
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Movie object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Movie'
+ */
 
-components:
-  schemas:
-    Genre:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
+/**
+ * @swagger
+ * /movies/genre/{genreName}:
+ *   get:
+ *     summary: Get movies by genre
+ *     parameters:
+ *       - in: path
+ *         name: genreName
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of movies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Movie'
+ */
 
-    Director:
-      type: object
-      properties:
-        name:
-          type: string
-        bio:
-          type: string
-        birth:
-          type: string
-          format: date
-        death:
-          type: string
-          format: date
-          nullable: true
-
-    Movie:
-      type: object
-      properties:
-        title:
-          type: string
-        description:
-          type: string
-        genre:
-          $ref: '#/components/schemas/Genre'
-        director:
-          $ref: '#/components/schemas/Director'
-        imagePath:
-          type: string
-        featured:
-          type: boolean
-        actors:
-          type: array
-          items:
-            type: string
-
-    User:
-      type: object
-      properties:
-        username:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        birthday:
-          type: string
-          format: date
-        favoriteMovies:
-          type: array
-          items:
-            type: string
+/**
+ * @swagger
+ * /movies/director/{directorName}:
+ *   get:
+ *     summary: Get movies by director
+ *     parameters:
+ *       - in: path
+ *         name: directorName
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of movies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Movie'
+ */
