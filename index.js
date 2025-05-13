@@ -12,7 +12,12 @@ const app = express();
 const Movie = Models.Movie;
 const User = Models.User;
 
-mongoose.connect("mongodb://localhost:27017/cfDB", {
+mongoose.connect(process.env.CONNECTION_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+mongoose.connect("mongodb://127.0.0.1:27017/filmforge_data", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -75,11 +80,10 @@ app.post(
     check("email", "Email does not appear to be valid").isEmail(),
   ],
   async (req, res) => {
-
     //Check the validation object for errors
     let errors = validationResult(req);
 
-    if (!errors.isEmpty()){
+    if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
 
@@ -343,7 +347,6 @@ app.get(
 );
 
 const port = process.env.PORT || 8080;
-app.listen(port, "0.0.0.0",() => {
+app.listen(port, "0.0.0.0", () => {
   console.log("Listening on Port " + port);
 });
-

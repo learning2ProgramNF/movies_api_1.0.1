@@ -1,0 +1,182 @@
+[
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f899" },
+    "title": "The Lost Kingdom",
+    "description": "An epic tale of betrayal and redemption in a mythical land.",
+    "genre": {
+      "name": "Fantasy",
+      "description": "Magical adventures set in fictional universes."
+    },
+    "director": {
+      "name": "Elaine Rivers",
+      "bio": "Elaine Rivers is an acclaimed British director celebrated for her visually stunning epics and emotionally complex storytelling, often exploring themes of power, identity, and destiny.",
+      "birth": "1972-04-12",
+      "death": null
+    },
+    "imagePath": "/images/lost-kingdom.jpg",
+    "featured": true,
+    "actors": ["Emma Stone", "David Oyelowo", "Rachel Weisz"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f89a" },
+    "title": "City of Shadows",
+    "description": "A gritty detective unravels a conspiracy in a corrupt city.",
+    "genre": {
+      "name": "Crime",
+      "description": "Stories focused on criminal underworlds and investigations."
+    },
+    "director": {
+      "name": "Marcus D'Angelo",
+      "bio": "Italian-American director acclaimed for his neo-noir films.",
+      "birth": "1965-09-03",
+      "death": null
+    },
+    "imagePath": "/images/city-of-shadows.jpg",
+    "featured": false,
+    "actors": ["Mahershala Ali", "Viola Davis", "Benicio Del Toro"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f89b" },
+    "title": "Hearts on Fire",
+    "description": "A passionate love story that defies societal expectations.",
+    "genre": {
+      "name": "Romance",
+      "description": "Emotion-driven stories centered on relationships."
+    },
+    "director": {
+      "name": "Sophia Lin",
+      "bio": "Award-winning director specializing in romantic dramas.",
+      "birth": "1980-07-21",
+      "death": null
+    },
+    "imagePath": "/images/hearts-on-fire.jpg",
+    "featured": true,
+    "actors": ["Timothée Chalamet", "Zendaya", "Florence Pugh"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f89c" },
+    "title": "Into the Stars",
+    "description": "Astronauts uncover a secret that could alter human history.",
+    "genre": {
+      "name": "Sci-Fi",
+      "description": "Speculative fiction involving futuristic concepts."
+    },
+    "director": {
+      "name": "Nathan Clark",
+      "bio": "Known for blending hard science with emotional storytelling.",
+      "birth": "1970-11-14",
+      "death": null
+    },
+    "imagePath": "/images/into-the-stars.jpg",
+    "featured": false,
+    "actors": ["John Boyega", "Jessica Chastain", "Oscar Isaac"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f89d" },
+    "title": "Echoes of War",
+    "description": "A soldier relives his past through haunting memories.",
+    "genre": {
+      "name": "Drama",
+      "description": "Emotionally intense stories dealing with real life issues."
+    },
+    "director": {
+      "name": "Karen Obasi",
+      "bio": "Nigerian filmmaker celebrated for her raw, humanistic films.",
+      "birth": "1978-03-30",
+      "death": null
+    },
+    "imagePath": "/images/echoes-of-war.jpg",
+    "featured": true,
+    "actors": ["Daniel Kaluuya", "Ruth Negga", "Idris Elba"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f89e" },
+    "title": "Mechanical Hearts",
+    "description": "A robot discovers humanity in a dystopian future.",
+    "genre": {
+      "name": "Sci-Fi",
+      "description": "Speculative fiction involving futuristic concepts."
+    },
+    "director": {
+      "name": "Takeshi Yamato",
+      "bio": "A pioneer in Japanese sci-fi animation and cinema.",
+      "birth": "1959-12-02",
+      "death": null
+    },
+    "imagePath": "/images/mechanical-hearts.jpg",
+    "featured": false,
+    "actors": ["Rami Malek", "Brie Larson", "Ken Watanabe"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f89f" },
+    "title": "The Last Stand",
+    "description": "One man defends his home against overwhelming odds.",
+    "genre": {
+      "name": "Action",
+      "description": "Fast-paced stories with physical stunts and conflict."
+    },
+    "director": {
+      "name": "Elaine Rivers",
+      "bio": "Elaine Rivers is an acclaimed British director celebrated for her visually stunning epics and emotionally complex storytelling, often exploring themes of power, identity, and destiny.",
+      "birth": "1972-04-12",
+      "death": null
+    },
+    "imagePath": "/images/the-last-stand.jpg",
+    "featured": true,
+    "actors": ["Chris Hemsworth", "Emily Blunt", "Dwayne Johnson"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f8a0" },
+    "title": "Laugh Track",
+    "description": "A washed-up comedian gets one last shot at fame.",
+    "genre": {
+      "name": "Comedy",
+      "description": "Light-hearted and humorous content meant to entertain."
+    },
+    "director": {
+      "name": "George Patel",
+      "bio": "Combines heartfelt narratives with comedy in unique ways.",
+      "birth": "1976-06-05",
+      "death": null
+    },
+    "imagePath": "/images/laugh-track.jpg",
+    "featured": false,
+    "actors": ["Awkwafina", "Pete Davidson", "Maya Rudolph"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f8a1" },
+    "title": "Whispers in the Wind",
+    "description": "A woman in a remote village hears voices from beyond.",
+    "genre": {
+      "name": "Thriller",
+      "description": "Suspenseful stories meant to excite and terrify."
+    },
+    "director": {
+      "name": "Ava DuLaurier",
+      "bio": "Director known for psychological thrillers with a feminist lens.",
+      "birth": "1983-02-11",
+      "death": null
+    },
+    "imagePath": "/images/whispers-wind.jpg",
+    "featured": true,
+    "actors": ["Natalie Dormer", "Tom Hiddleston", "Anya Taylor-Joy"]
+  },
+  {
+    "_id": { "$oid": "68191d9dc6c1b25168b5f8a2" },
+    "title": "Canvas of Life",
+    "description": "An artist finds new purpose through tragedy and healing.",
+    "genre": {
+      "name": "Biography",
+      "description": "Based on true stories of individuals’ lives."
+    },
+    "director": {
+      "name": "Jonas Müller",
+      "bio": "Swiss-German filmmaker exploring identity and transformation.",
+      "birth": "1968-10-29",
+      "death": null
+    },
+    "imagePath": "/images/canvas-of-life.jpg",
+    "featured": false,
+    "actors": ["Eddie Redmayne", "Cate Blanchett", "Javier Bardem"]
+  }
+]
