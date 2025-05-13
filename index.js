@@ -77,7 +77,7 @@ app.post(
       "username",
       "Username contains non-alphanumeric characters"
     ).isAlphanumeric(),
-    check("pasword", "Password is required").not().isEmpty(),
+    check("password", "Password is required").not().isEmpty(),
     check("email", "Email does not appear to be valid").isEmail(),
   ],
   async (req, res) => {
