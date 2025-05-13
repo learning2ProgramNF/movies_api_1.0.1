@@ -17,10 +17,11 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useUnifiedTopology: true,
 });
 
-mongoose.connect("mongodb://127.0.0.1:27017/filmforge_data", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+//local host connection
+// mongoose.connect("mongodb://127.0.0.1:27017/filmforge_data", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 app.use(morgan("common"));
 app.use(bodyParser.urlencoded({ extended: true }));
