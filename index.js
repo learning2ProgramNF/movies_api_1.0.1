@@ -170,15 +170,43 @@ app.get(
   (required)
   birthday: Date
 }*/
+// Update a user's info, by username
+/* We’ll expect JSON in this format
+{
+  username: String,
+  (required)
+  password: String,
+  (required)
+  email: String,
+  (required)
+  birthday: Date
+}*/
 app.put(
   "/users/:username",
+  [
+    check("username", "Username is required").isLength({ min: 5 }),
+    check(
+      "username",
+      "Username contains non-alphanumeric characters"
+    ).isAlphanumeric(),
+    check("password", "Password is required").not().isEmpty(),
+    check("email", "Email does not appear to be valid").isEmail(),
+  ],
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    //CONDITION TO CHECK HERE
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    // Authorization check
     if (req.user.username !== req.params.username) {
       return res.status(400).send("Permission Denied");
     }
-    //CONDITION ENDS
+
+    // Hash the new password
+    let hashedPassword = User.hashPassword(req.body.password);
 
     await User.findOneAndUpdate(
       { username: req.params.username },
@@ -186,13 +214,13 @@ app.put(
         $set: {
           username: req.body.username,
           name: req.body.name,
-          password: req.body.password,
+          password: hashedPassword,
           email: req.body.email,
           birthday: req.body.birthday,
         },
       },
       { new: true }
-    ) //This line makes sure that the updated document is returned
+    )
       .then((updatedUser) => {
         res.json(updatedUser);
       })
