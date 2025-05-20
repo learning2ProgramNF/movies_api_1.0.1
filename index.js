@@ -1,3 +1,4 @@
+require('dotenv').config(); // <-- must be first
 const express = require("express"),
   morgan = require("morgan"),
   fs = require("fs"),
@@ -13,8 +14,6 @@ const Movie = Models.Movie;
 const User = Models.User;
 
 mongoose.connect(process.env.CONNECTION_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
 });
 
 //local host connection
@@ -291,7 +290,7 @@ app.delete(
         if (!user) {
           res.status(400).send(req.params.username + " was not found");
         } else {
-          res.status(400).send(req.params.username + " was deleted");
+          res.status(200).send(req.params.username + " was deleted");
         }
       })
       .catch((err) => {
