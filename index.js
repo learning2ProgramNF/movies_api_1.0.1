@@ -12,9 +12,15 @@ const express = require("express"),
 const app = express();
 const Movie = Models.Movie;
 const User = Models.User;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(process.env.CONNECTION_URI, {
-});
+
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() =>  console.log("Connected to MongoDB"))
+.catch((err) => console.log("MongoDB connection error", err));
 
 //local host connection
 // mongoose.connect("mongodb://127.0.0.1:27017/filmforge_data", {
