@@ -51,10 +51,10 @@ app.use(
   })
 );
 
-let auth = require("./auth")(app);
-
 const passport = require("passport");
 require("./passport");
+
+let auth = require("./auth")(app);
 
 app.get("/", (req, res) => {
   res.send("Welcome to my Movie APi!");
