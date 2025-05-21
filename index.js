@@ -9,6 +9,8 @@ const express = require("express"),
   Models = require("./models.js"),
   { check, validationResult } = require("express-validator");
 
+import cors from 'cors';
+
 const app = express();
 const Movie = Models.Movie;
 const User = Models.User;
@@ -31,9 +33,10 @@ mongoose.connect(MONGODB_URI, {
 app.use(morgan("common"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 const cors = require("cors");
-let allowedOrigins = ["http://localhost:8080", "http://testsite.com"];
+let allowedOrigins = ["http://localhost:8080","http://localhost:1234", "https://film-forge-11a9389fe47d.herokuapp.com/movies"];
 
 app.use(
   cors({
