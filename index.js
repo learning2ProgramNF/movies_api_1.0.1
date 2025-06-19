@@ -1,4 +1,4 @@
-require('dotenv').config(); // <-- must be first
+require("dotenv").config(); // <-- must be first
 const express = require("express"),
   morgan = require("morgan"),
   fs = require("fs"),
@@ -15,13 +15,13 @@ const Movie = Models.Movie;
 const User = Models.User;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() =>  console.log("Connected to MongoDB"))
-.catch((err) => console.log("MongoDB connection error", err));
+mongoose
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.log("MongoDB connection error", err));
 
 //local host connection
 // mongoose.connect("mongodb://127.0.0.1:27017/filmforge_data", {
@@ -33,7 +33,11 @@ app.use(morgan("common"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-let allowedOrigins = ["http://localhost:8080", "http://localhost:1234", "https://film-forge-11a9389fe47d.herokuapp.com"];
+let allowedOrigins = [
+  "http://localhost:8080",
+  "http://localhost:1234",
+  "https://film-forge-11a9389fe47d.herokuapp.com",
+];
 
 app.use(
   cors({
@@ -127,9 +131,12 @@ app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    //CONDITION TO CHECK HERE
-    if (req.user.username !== req.params.username) {
-      return res.status(400).send("Permission Denied");
+    // Authorization check
+    if (!req.user || req.user.username !== req.params.username) {
+      console.log("Auth check failed:");
+      console.log("req.user:", req.user?.username);
+      console.log("req.params.username:", req.params.username);
+      return res.status(403).send("Permission Denied");
     }
     //CONDITION ENDS
     await User.find()
@@ -164,7 +171,6 @@ app.get(
   }
 );
 
-
 // Update a user's info, by username
 /* We’ll expect JSON in this format
 {
@@ -184,7 +190,10 @@ app.put(
       "username",
       "Username contains non-alphanumeric characters"
     ).isAlphanumeric(),
-    check("password", "Password is required").not().isEmpty(),
+    check("password")
+      .optional()
+      .isLength({ min: 6 })
+      .withMessage("Password must be at lest 6 characters long"),
     check("email", "Email does not appear to be valid").isEmail(),
   ],
   passport.authenticate("jwt", { session: false }),
@@ -196,24 +205,28 @@ app.put(
     }
 
     // Authorization check
-    if (req.user.username !== req.params.username) {
-      return res.status(400).send("Permission Denied");
+    if (!req.user || req.user.username !== req.params.username) {
+      console.log("Auth check failed:");
+      console.log("req.user:", req.user?.username);
+      console.log("req.params.username:", req.params.username);
+      return res.status(403).send("Permission Denied");
     }
 
-    // Hash the new password
-    let hashedPassword = User.hashPassword(req.body.password);
+    const updatedFields = {
+      username: req.body.username,
+      name: req.body.name,
+      email: req.body.email,
+      birthday: req.body.birthday,
+    };
+
+    //Only hash and set password if it was provided
+    if (req.body.password) {
+      updatedFields.password = User.hashPassword(req.body.password);
+    }
 
     await User.findOneAndUpdate(
       { username: req.params.username },
-      {
-        $set: {
-          username: req.body.username,
-          name: req.body.name,
-          password: hashedPassword,
-          email: req.body.email,
-          birthday: req.body.birthday,
-        },
-      },
+      { $set: updatedFields },
       { new: true }
     )
       .then((updatedUser) => {
@@ -231,9 +244,12 @@ app.post(
   "/users/:username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    //CONDITION TO CHECK HERE
-    if (req.user.username !== req.params.username) {
-      return res.status(400).send("Permission Denied");
+    // Authorization check
+    if (!req.user || req.user.username !== req.params.username) {
+      console.log("Auth check failed:");
+      console.log("req.user:", req.user?.username);
+      console.log("req.params.username:", req.params.username);
+      return res.status(403).send("Permission Denied");
     }
     //CONDITION ENDS
 
@@ -259,9 +275,12 @@ app.delete(
   "/users/:username/movies/:MovieID",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    //CONDITION TO CHECK HERE
-    if (req.user.username !== req.params.username) {
-      return res.status(400).send("Permission Denied");
+    // Authorization check
+    if (!req.user || req.user.username !== req.params.username) {
+      console.log("Auth check failed:");
+      console.log("req.user:", req.user?.username);
+      console.log("req.params.username:", req.params.username);
+      return res.status(403).send("Permission Denied");
     }
     //CONDITION ENDS
     await User.findOneAndUpdate(
@@ -286,9 +305,12 @@ app.delete(
   "/users/:username",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    //CONDITION TO CHECK HERE
-    if (req.user.username !== req.params.username) {
-      return res.status(400).send("Permission Denied");
+    // Authorization check
+    if (!req.user || req.user.username !== req.params.username) {
+      console.log("Auth check failed:");
+      console.log("req.user:", req.user?.username);
+      console.log("req.params.username:", req.params.username);
+      return res.status(403).send("Permission Denied");
     }
     //CONDITION ENDS
     await User.findOneAndDelete({ username: req.params.username })
