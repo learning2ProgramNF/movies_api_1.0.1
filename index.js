@@ -133,9 +133,6 @@ app.get(
   async (req, res) => {
     // Authorization check
     if (!req.user || req.user.username !== req.params.username) {
-      console.log("Auth check failed:");
-      console.log("req.user:", req.user?.username);
-      console.log("req.params.username:", req.params.username);
       return res.status(403).send("Permission Denied");
     }
     //CONDITION ENDS
@@ -204,8 +201,14 @@ app.put(
       return res.status(422).json({ errors: errors.array() });
     }
 
+    const targetUser = await User.findOne({ username: req.params.username });
+
     // Authorization check
-    if (!req.user || req.user.username !== req.params.username) {
+    if (
+      !req.user ||
+      !targetUser ||
+      req.user._id.toString() !== targetUser._id.toString()
+    ) {
       console.log("Auth check failed:");
       console.log("req.user:", req.user?.username);
       console.log("req.params.username:", req.params.username);

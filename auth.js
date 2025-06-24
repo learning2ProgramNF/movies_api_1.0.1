@@ -1,11 +1,10 @@
-const jwtSecret = process.env.JWT_SECRET; //This has to be the same key used in the JWTSrategy
-const jwt = require("jsonwebtoken"),
-  passport = require("passport");
-const { token } = require("morgan");
-
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
 require("./passport");
 
-let generateJWTToken = (user) => {
+const jwtSecret = process.env.JWT_SECRET;
+
+const generateJWTToken = (user) => {
   return jwt.sign(user, jwtSecret, {
     subject: user.username, // This is the username you're encoding in the JWT
     expiresIn: "7d", //This specifies that the token will expire in 7 days
@@ -27,13 +26,13 @@ module.exports = (router) => {
       if (!user) {
         return res.status(401).json({
           message: "Login failed",
-          reason: info ? info.message : "Invalid Credentials",
+          reason: info?.message || "Invalid Credentials",
         });
       }
 
       req.login(user, { session: false }, (error) => {
         if (error) {
-          return res.send(500).json({ message: "Login error", error });
+          return res.status(500).json({ message: "Login error", error });
         }
 
         const tokenPayload = {
@@ -45,7 +44,7 @@ module.exports = (router) => {
           favoriteMovies: user.favoriteMovies || [],
         };
 
-        let token = generateJWTToken(tokenPayload);
+        const token = generateJWTToken(tokenPayload);
         return res.json({ user: tokenPayload, token });
       });
     })(req, res);
