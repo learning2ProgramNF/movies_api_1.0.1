@@ -40,6 +40,7 @@ let allowedOrigins = [
   "https://film-forager.netlify.app/",
 ];
 
+
 app.use(
   cors({
     origin: (origin, callback) => {
