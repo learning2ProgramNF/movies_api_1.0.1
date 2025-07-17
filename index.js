@@ -1,4 +1,5 @@
-require("dotenv").config(); // <-- must be first
+import dotenv from "dotenv";
+dotenv.config();
 const express = require("express"),
   morgan = require("morgan"),
   fs = require("fs"),
