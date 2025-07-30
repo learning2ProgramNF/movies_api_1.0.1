@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const express = require("express"),
-  const morgan = require("morgan"),
+  morgan = require("morgan"),
   fs = require("fs"),
   path = require("path"),
   bodyParser = require("body-parser"),
