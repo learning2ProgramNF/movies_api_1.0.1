@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
-const express = require("express"),
-  morgan = require("morgan"),
+import express from "express";
+  const morgan = require("morgan"),
   fs = require("fs"),
   path = require("path"),
   bodyParser = require("body-parser"),
