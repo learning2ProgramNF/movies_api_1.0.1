@@ -39,7 +39,7 @@ let allowedOrigins = [
   "http://localhost:8080",
   "http://localhost:1234",
   "https://film-forge-11a9389fe47d.herokuapp.com",
-  "https://film-forager.netlify.app/",
+  "https://film-forager.netlify.app",
 ];
 
 
